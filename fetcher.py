@@ -21,3 +21,23 @@
 	fetching necessary data about a stock ticker.
 – The arguments passed to this module are: time lim, ticker filename, info filename
 '''
+
+import sys
+
+def get_tickers(fname):
+	'''
+		
+	'''
+	with open(fname) as file:
+		t = [line.strip("\n") for line in file]
+	return t
+
+def update_csv():
+
+
+
+if __name__ == '__main__':
+	tickers = get_tickers("tickers.txt")
+
+	for t in tickers:
+		update_csv(t)
