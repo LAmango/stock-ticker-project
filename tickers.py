@@ -6,7 +6,7 @@
 			n - int, the first n VALID tickers
 
 		use the following url to access all tickers in the nasdaq
-		http://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQrender=download
+		https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&render=download
 		
 		use the iex-api-python module to verify that the price function for the Stock
 		corresponding to the fetched ticker works. if the .price() for a given ticker does not work,
@@ -21,3 +21,18 @@
 
 		value of n will be <= 150
 '''
+
+import json
+import requests
+import pandas
+
+# Currently pulls all stock information from website and prints it to screen
+url = 'https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&render=download'
+response = requests.get(url)
+
+# TODO: send output to file
+if response.status_code == 200:
+    print(response.content.decode('utf-8'))
+
+else:
+    print(response.status_code)
