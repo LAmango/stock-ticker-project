@@ -26,13 +26,36 @@ import json
 import requests
 import pandas
 
-# Currently pulls all stock information from website and prints it to screen
-url = 'https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&render=download'
-response = requests.get(url)
 
-# TODO: send output to file
-if response.status_code == 200:
-    print(response.content.decode('utf-8'))
+def save_tickers(n):
+    # Sets URL for stock information to pull from
+    url = 'https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&render=download'
+    response = requests.get(url)
 
-else:
-    print(response.status_code)
+    if response.status_code == 200:
+        # pulls all data from CSV file into string
+        content = response.content.decode('utf-8')
+
+        # splits string into a list at the newline feed from CSV info
+        lines = content.split("\n")
+
+
+        first_line = True
+
+        # TODO: needs to check each symbol to see if price will be true.
+        for line in lines:
+            if first_line == False: # check to see if we are currently on the first line
+                # create ticker file if needed, write to file
+                fp = open("ticker.txt", "w")
+                fp.write(content)
+            else:
+                # if we are on the first line, need to skip it and write the rest into file
+                first_line = False
+
+    else:
+        print(response.status_code)
+
+
+if __name__ == "__main__":
+    n = 20
+    save_tickers(n)
