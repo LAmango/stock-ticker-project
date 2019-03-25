@@ -72,7 +72,7 @@ def get_tickers_from_file():
 def save_tickers(n, fn):
     content = get_tickers()
     # splits string into a list at the newline feed from CSV info
-    lines = content.split("\n")
+    lines = content.split("\r\n")
 
 
     first_line = True
