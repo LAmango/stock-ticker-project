@@ -22,10 +22,18 @@
 		value of n will be <= 150
 '''
 
+import sys
 import json
 import requests
 import pandas
 
+# checks to see if the symbol has a price from the host website.  If no price associated,
+# reurns false to skip that line.
+def is_valid(symbol):
+    try:
+        return True
+    except:
+        return False
 
 def save_tickers(n):
     # Sets URL for stock information to pull from
@@ -41,15 +49,21 @@ def save_tickers(n):
 
 
         first_line = True
+        lines_output = 0
 
-        # TODO: needs to check each symbol to see if price will be true.
+        # create ticker file if needed
+        fp = open("ticker.txt", "w")
+
         for line in lines:
-            if first_line == False: # check to see if we are currently on the first line
-                # create ticker file if needed, write to file
-                fp = open("ticker.txt", "w")
-                fp.write(content)
+            if lines_output == n: #
+                break
+            if not first_line: # check to see if we are currently on the first line
+                symbol = line.split(',', 1)[0].replace('"', '')
+                if is_valid(symbol):
+                    fp.write(line) # write to file
+                    lines_output += 1
             else:
-                # if we are on the first line, need to skip it and write the rest into file
+                # if we are on the first line, skip header
                 first_line = False
 
     else:
@@ -57,5 +71,5 @@ def save_tickers(n):
 
 
 if __name__ == "__main__":
-    n = 20
+    n = int(sys.argv[1])
     save_tickers(n)
