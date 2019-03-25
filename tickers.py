@@ -12,7 +12,7 @@
 		corresponding to the fetched ticker works. if the .price() for a given ticker does not work,
 		DO NOT have it written to the file.
 
-		write one ticker symbole per line in a file called ticker.txt
+		write one ticker symbole per line in a file called tickers.txt
 
 		the 'n' argument will be provided as a system argument to the module.
 
@@ -79,7 +79,7 @@ def save_tickers(n):
     lines_output = 0
 
     # create ticker file if needed
-    fp = open("ticker.txt", "w")
+    fp = open("tickers.txt", "w")
 
     for line in lines:
         if lines_output == n: #
@@ -87,7 +87,7 @@ def save_tickers(n):
         if not first_line: # check to see if we are currently on the first line
             symbol = line.split(',', 1)[0].replace('"', '')
             if is_valid(symbol):
-                fp.write(line+'\n') # write to file
+                fp.write(symbol+'\n') # write to file
                 lines_output += 1
         else:
             # if we are on the first line, skip header
