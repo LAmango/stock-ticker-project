@@ -69,7 +69,7 @@ def get_tickers_from_file():
     return content
 
 
-def save_tickers(n):
+def save_tickers(n, fn):
     content = get_tickers()
     # splits string into a list at the newline feed from CSV info
     lines = content.split("\n")
@@ -79,7 +79,7 @@ def save_tickers(n):
     lines_output = 0
 
     # create ticker file if needed
-    fp = open("tickers.txt", "w")
+    fp = open(fn, "w")
 
     for line in lines:
         if lines_output == n: #
@@ -92,8 +92,10 @@ def save_tickers(n):
         else:
             # if we are on the first line, skip header
             first_line = False
+    fp.close()
 
 
 if __name__ == "__main__":
     n = int(sys.argv[1])
-    save_tickers(n)
+    file_name = (sys.argv[2])
+    save_tickers(n, file_name)
