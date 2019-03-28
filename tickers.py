@@ -22,14 +22,11 @@
 		value of n will be <= 150
 '''
 
+import re
+import requests
 from iex import Stock
 import sys
-import json
-import requests
-import pandas
 
-# checks to see if the symbol has a price from the host website.  If no price associated,
-# reurns false to skip that line.
 def is_valid(symbol):
     try:
         Stock(symbol).price()
@@ -37,61 +34,23 @@ def is_valid(symbol):
     except:
         return False
 
-def get_tickers():
-    # This is used for testing and debug. This allows us to mock response from server.
-    # content = get_tickers_from_file()
+def save_tickers(n, file_name):
+    mylist = []
+    counter = 0
+    for x in range(1,5):
+        content=requests.get("https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&page=" + str(x))
+        mylist += re.findall(r'<a href="https://www.nasdaq.com/symbol/[^"/]+">\s+([A-Z]+)</a>',str(content.text))
 
-    content = get_tickers_live()
-    return content
+    fp = open(file_name, "w")
 
-def get_tickers_live():
-    # Sets URL for stock information to pull from
-    url = 'https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&render=download'
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        # pulls all data from CSV file into string
-        return response.content.decode('utf-8')
-    else:
-        raise RuntimeError("requests.get("+url+") returned status code " + str(response.status_code))
-
-# used for debug of CSV file.
-def get_tickers_to_file():
-    fp = open("tickers.csv","w")
-    fp.write(get_tickers_live())
-    fp.close()
-
-# used for debug of CSV file.
-def get_tickers_from_file():
-    fp = open("tickers.csv","r")
-    content = fp.read()
-    fp.close()
-    return content
-
-
-def save_tickers(n, fn):
-    content = get_tickers()
-    # splits string into a list at the newline feed from CSV info
-    lines = content.split("\r\n")
-
-
-    first_line = True
-    lines_output = 0
-
-    # create ticker file if needed
-    fp = open(fn, "w")
-
-    for line in lines:
-        if lines_output == n: #
-            break
-        if not first_line: # check to see if we are currently on the first line
-            symbol = line.split(',', 1)[0].replace('"', '')
-            if is_valid(symbol):
-                fp.write(symbol+'\n') # write to file
-                lines_output += 1
-        else:
-            # if we are on the first line, skip header
-            first_line = False
+    for i in mylist:
+        if is_valid(i):
+            fp.write(i + "\n")
+            counter += 1
+            if counter > n:
+                break
+            if counter == n:
+                break
     fp.close()
 
 
