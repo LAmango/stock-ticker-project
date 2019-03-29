@@ -27,6 +27,7 @@ import requests
 from iex import Stock
 import sys
 
+# Checks to see if the price for the ticker is available.
 def is_valid(symbol):
     try:
         Stock(symbol).price()
@@ -34,11 +35,13 @@ def is_valid(symbol):
     except:
         return False
 
+# Gathers stock tickers from nasdaq.com and collects up to 150.
 def save_tickers(n, file_name):
     mylist = []
     counter = 0
     for x in range(1,5):
         content=requests.get("https://www.nasdaq.com/screening/companies-by-industry.aspx?exchange=NASDAQ&page=" + str(x))
+        # REGEX to find stock symbol from page.
         mylist += re.findall(r'<a href="https://www.nasdaq.com/symbol/[^"/]+">\s+([A-Z]+)</a>',str(content.text))
 
     fp = open(file_name, "w")
