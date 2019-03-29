@@ -18,9 +18,10 @@
 '''
 
 import sys
+import pandas as pd
 
 #query.py: A .py file for the Query module. To execute this, the command used will be:
-# python3 query.py -verbose True -file info_filename -ticker ticker -time 13:33 
+# python3 query.py -verbose True -file info.csv -ticker YI -time 13:33 
 
 def parseCommandLineFlags():
 	flag,value = [],[]
@@ -38,10 +39,10 @@ def isVerbose():
 	return flags["verbose"]=="True"
 
 def query(verbose, file_name, ticker, time):
-	print(verbose)
-	print(file_name)
-	print(ticker)
-	print(time)
+    df = pd.read_csv(file_name)
+    df = df[(df["Ticker"] == ticker) & (df["Time"] == time)]
+    for col in list(df):
+        print(col + ":" + df[col].to_string(index=False))
 
 if __name__ == "__main__":
     flags = parseCommandLineFlags()
