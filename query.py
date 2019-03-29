@@ -14,15 +14,12 @@
 		time (HH:MM format)
 		file (information file that contains the information) 
 		ticker
-	
 '''
 
 import sys
 import pandas as pd
 
-#query.py: A .py file for the Query module. To execute this, the command used will be:
-# python3 query.py -verbose True -file info.csv -ticker YI -time 13:33 
-
+# parse the flags entered from the command line. Sets key and value for each.
 def parseCommandLineFlags():
 	flag,value = [],[]
 
@@ -35,16 +32,31 @@ def parseCommandLineFlags():
 	flags = dict(list(zip(flag, value)))
 	return flags
 
-def isVerbose():
-	return flags["verbose"]=="True"
+def str_to_bool(v):
+    if v.lower() == "true": # set the verbose flag to lower case to check for true of false
+        return True
+    else:
+        return False
 
+# steps through file and collects information for requested ticker.
 def query(verbose, file_name, ticker, time):
+
     df = pd.read_csv(file_name)
+    rows = df.shape[0]
+    columns = df.shape[1]
+
     df = df[(df["Ticker"] == ticker) & (df["Time"] == time)]
-    for col in list(df):
+    cols = list(df)
+
+    if str_to_bool(verbose):
+        print("Number of rows:", rows)
+        print("Number of columns:", columns)
+        print("Column names:", cols)
+
+    for col in cols:
         print(col + ":" + df[col].to_string(index=False))
 
 if __name__ == "__main__":
     flags = parseCommandLineFlags()
-    query(bool(flags["verbose"]), flags["file"], flags["ticker"], flags["time"])
+    query(flags["verbose"], flags["file"], flags["ticker"], flags["time"])
     
