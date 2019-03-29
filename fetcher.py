@@ -23,7 +23,6 @@
 '''
 
 import sys
-from iex import Stock
 from datetime import datetime, time
 import json
 import csv
@@ -55,9 +54,6 @@ def get_tickers(fname):
 		t = [line.strip("\n") for line in file]
 	return t
 
-def update_csv():
-	pass
-
 async def fetch(session, ticker):
 	'''
 		args:
@@ -71,16 +67,7 @@ async def fetch(session, ticker):
 	async with session.get(f'https://api.iextrading.com/1.0/stock/{ticker}/quote?displayPercent=false') as response:
 		print(f'requesting {ticker}')
 		return await response.json()
-
-	# q = Stock(ticker).quote()
-	# print(f'requesting {ticker} info')
-	# q = Stock(ticker).quote()
-	# print(f"got {ticker} quote!")
-	# get current time
-
-	# return need values and time
-	# return [t, q['symbol'], q['latestPrice'], q['latestVolume'], q['close'], q['open'], q['low'], q['high']]
-
+		
 if __name__ == '__main__':
 	header = ["Time", "Ticker", "latestPrice", "latestVolume", "Close", "Open", "low", "high"]
 	# open csv
@@ -99,7 +86,7 @@ if __name__ == '__main__':
 			time.sleep(60)
 	final.sort_values(by=['Ticker', 'Time'], inplace=True)
 	print(final)
-	final.to_csv('info.csv', index=False)
+	final.to_csv(sys.argv[3], index=False)
 
 
 
